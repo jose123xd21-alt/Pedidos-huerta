@@ -1,13 +1,27 @@
 {
   "name": "Huerto TPV Pro",
   "short_name": "Huerto TPV",
-  "description": "Gestor sencillo de pedidos de huerta con catálogo y base de datos compartida.",
-  "start_url": "./",
+  "id": "./",
+  "description": "Gestor de pedidos de huerta con catálogo y base de datos compartida.",
+  "start_url": "./?source=pwa",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#f8fafc",
   "theme_color": "#16a34a",
+  "prefer_related_applications": false,
   "icons": [
-    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
