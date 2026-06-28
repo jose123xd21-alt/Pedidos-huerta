@@ -1,6 +1,10 @@
 import { firebaseConfig } from './firebase-config.js';
 
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {
+  initializeApp,
+  getApps,
+  getApp
+} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 
 import {
   getAuth,
@@ -55,15 +59,10 @@ const defaultCatalog = [
   { name: 'Naranjas', unit: 'kg' }
 ];
 
-const firebaseIsConfigured = Boolean(
-  firebaseConfig &&
-  firebaseConfig.apiKey &&
-  !firebaseConfig.apiKey.includes('PEGA_AQUI')
-);
+let app = null;
+let auth = null;
+let db = null;
 
-let app;
-let auth;
-let db;
 let catalog = [];
 let orders = [];
 let unsubscribeOrders = null;
@@ -108,29 +107,48 @@ loginPassword.addEventListener('keydown', event => {
 });
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
+  navigator.serviceWorker.register('./sw.js?v=20').catch(() => {});
 }
 
-if (!firebaseIsConfigured) {
-  loginError.textContent = 'Falta configurar Firebase. Abre firebase-config.js y pega la configuración de tu proyecto.';
-  loginBtn.disabled = true;
-} else {
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db = getFirestore(app);
+initFirebase();
 
-  onAuthStateChanged(auth, async user => {
-    if (!user) {
-      setLoggedOut();
-      return;
-    }
+function initFirebase() {
+  const firebaseIsConfigured = Boolean(
+    firebaseConfig &&
+    firebaseConfig.apiKey &&
+    !firebaseConfig.apiKey.includes('PEGA_AQUI') &&
+    firebaseConfig.projectId &&
+    !firebaseConfig.projectId.includes('PEGA_AQUI')
+  );
 
-    setLoggedIn(user);
-    await seedCatalogIfEmpty();
-    listenCatalog();
-    listenOrders();
-    show('pedidos');
-  });
+  if (!firebaseIsConfigured) {
+    loginError.textContent = 'Falta configurar Firebase. Abre firebase-config.js y pega la configuración de tu proyecto.';
+    loginBtn.disabled = true;
+    return;
+  }
+
+  try {
+    app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) {
+        setLoggedOut();
+        return;
+      }
+
+      setLoggedIn(user);
+      await seedCatalogIfEmpty();
+      listenCatalog();
+      listenOrders();
+      show('pedidos');
+    });
+  } catch (error) {
+    console.error('Error iniciando Firebase:', error);
+    loginError.textContent = 'Error iniciando Firebase: ' + friendlyFirebaseError(error);
+    loginBtn.disabled = true;
+  }
 }
 
 function setLoggedOut() {
@@ -165,6 +183,11 @@ async function login() {
     return;
   }
 
+  if (!auth) {
+    loginError.textContent = 'Firebase no se ha iniciado bien. Revisa app.js, firebase-config.js y limpia la caché.';
+    return;
+  }
+
   loginBtn.disabled = true;
   loginError.textContent = '';
 
@@ -172,6 +195,7 @@ async function login() {
     await signInWithEmailAndPassword(auth, email, password);
     loginPassword.value = '';
   } catch (error) {
+    console.error(error);
     loginError.textContent = friendlyFirebaseError(error);
   } finally {
     loginBtn.disabled = false;
@@ -179,7 +203,7 @@ async function login() {
 }
 
 async function logout() {
-  await signOut(auth);
+  if (auth) await signOut(auth);
 }
 
 function show(tab) {
@@ -479,6 +503,10 @@ function friendlyFirebaseError(error) {
 
   if (code.includes('auth/user-not-found')) {
     return 'No existe ese usuario en Firebase.';
+  }
+
+  if (code.includes('auth/unauthorized-domain')) {
+    return 'El dominio de GitHub Pages no está autorizado en Firebase Authentication.';
   }
 
   if (code.includes('permission-denied')) {
