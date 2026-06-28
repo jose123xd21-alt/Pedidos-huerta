@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#16a34a" />
+  <title>Huerto TPV Pro</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header>
+  <div>
+    <strong>📦 Huerto TPV Pro</strong>
+    <small id="user-email"></small>
+  </div>
+  <button id="logout-btn" class="btn-ghost hidden">Salir</button>
+</header>
+
+<main>
+  <section id="login-view" class="view active">
+    <div class="card">
+      <h2>Entrar</h2>
+      <p class="muted">
+        Inicia sesión para ver los mismos pedidos desde tu móvil y el de tu pareja.
+      </p>
+
+      <label for="login-email">Correo</label>
+      <input type="email" id="login-email" autocomplete="email" placeholder="tu@email.com" />
+
+      <label for="login-password">Contraseña</label>
+      <input type="password" id="login-password" autocomplete="current-password" placeholder="Contraseña" />
+
+      <button class="btn-primary" id="login-btn">Entrar</button>
+      <p id="login-error" class="error"></p>
+
+      <div class="note">
+        Primero crea los usuarios en Firebase Authentication. Esta app no permite registrarse desde fuera.
+      </div>
+    </div>
+  </section>
+
+  <section id="v-pedidos" class="view">
+    <div class="card">
+      <h2>Nuevo pedido</h2>
+
+      <label for="cliente">Cliente</label>
+      <input type="text" id="cliente" placeholder="Nombre del cliente" autocomplete="off" />
+
+      <div id="items-list"></div>
+
+      <button class="btn-primary" id="add-row-btn">+ Añadir producto</button>
+      <button class="btn-success" id="save-order-btn">Guardar pedido</button>
+    </div>
+  </section>
+
+  <section id="v-lista" class="view">
+    <div class="list-header">
+      <h2>Pedidos</h2>
+      <button id="refresh-btn" class="btn-secondary">Actualizar</button>
+    </div>
+
+    <div id="sync-status" class="sync-status">Conectando con la base de datos...</div>
+
+    <h3>🟠 Pendientes</h3>
+    <div id="pending-container"></div>
+
+    <h3>🟢 Entregados</h3>
+    <div id="delivered-container"></div>
+  </section>
+
+  <section id="v-catalogo" class="view">
+    <div class="card">
+      <h2>Catálogo</h2>
+      <p class="muted">Este catálogo también se guarda en la base de datos compartida.</p>
+
+      <div id="cat-container"></div>
+
+      <hr />
+
+      <label for="new-prod">Nuevo producto</label>
+      <input type="text" id="new-prod" placeholder="Ej: Tomate cherry" autocomplete="off" />
+
+      <label for="new-unit">Unidad</label>
+      <select id="new-unit">
+        <option value="kg">kg</option>
+        <option value="unidades">unidades</option>
+        <option value="docenas">docenas</option>
+        <option value="manojos">manojos</option>
+        <option value="cajas">cajas</option>
+        <option value="bolsas">bolsas</option>
+        <option value="cabezas">cabezas</option>
+      </select>
+
+      <button class="btn-primary" id="add-catalog-btn">Añadir al catálogo</button>
+    </div>
+  </section>
+</main>
+
+<nav id="bottom-nav" class="nav hidden">
+  <button class="nav-item active" data-tab="pedidos">➕ Nuevo</button>
+  <button class="nav-item" data-tab="lista">📋 Lista</button>
+  <button class="nav-item" data-tab="catalogo">🛒 Catálogo</button>
+</nav>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    match /orders/{orderId} {
+      allow read, create, update, delete: if signedIn();
+    }
+
+    match /catalog/{productId} {
+      allow read, create, update, delete: if signedIn();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+/*
+OPCIÓN MÁS RESTRICTIVA:
+Si quieres limitarlo solo a dos correos concretos, sustituye signedIn() por esta función
+y usa allowedUser() en las reglas de orders y catalog.
+
+function allowedUser() {
+  return request.auth != null &&
+    request.auth.token.email in [
+      "TU_CORREO@gmail.com",
+      "CORREO_DE_TU_PAREJA@gmail.com"
+    ];
+}
+*/

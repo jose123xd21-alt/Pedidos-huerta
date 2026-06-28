@@ -1,0 +1,13 @@
+{
+  "name": "Huerto TPV Pro",
+  "short_name": "Huerto TPV",
+  "description": "Gestor sencillo de pedidos de huerta con catálogo y base de datos compartida.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#16a34a",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
