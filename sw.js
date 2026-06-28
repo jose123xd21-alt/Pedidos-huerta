@@ -1,4 +1,4 @@
-const CACHE_NAME = 'huerto-tpv-pro-v20';
+const CACHE_NAME = 'huerto-tpv-pro-v30';
 
 self.addEventListener('install', event => {
   self.skipWaiting();

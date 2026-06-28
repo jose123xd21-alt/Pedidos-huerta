@@ -29,34 +29,59 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const defaultCatalog = [
-  { name: 'Huevos', unit: 'docenas' },
-  { name: 'Patatas', unit: 'kg' },
-  { name: 'Tomates', unit: 'kg' },
-  { name: 'Pepinos', unit: 'kg' },
-  { name: 'Pimientos', unit: 'kg' },
-  { name: 'Pimientos italianos', unit: 'kg' },
-  { name: 'Pimientos rojos', unit: 'kg' },
-  { name: 'Berenjenas', unit: 'kg' },
-  { name: 'Calabacines', unit: 'kg' },
-  { name: 'Cebollas', unit: 'kg' },
-  { name: 'Ajos', unit: 'cabezas' },
-  { name: 'Lechugas', unit: 'unidades' },
-  { name: 'Habicholillas / Judía verde', unit: 'kg' },
-  { name: 'Habas', unit: 'kg' },
-  { name: 'Guisantes', unit: 'kg' },
-  { name: 'Acelgas', unit: 'manojos' },
-  { name: 'Espinacas', unit: 'manojos' },
-  { name: 'Zanahorias', unit: 'manojos' },
-  { name: 'Rábanos', unit: 'manojos' },
-  { name: 'Coliflor', unit: 'unidades' },
-  { name: 'Brócoli', unit: 'unidades' },
-  { name: 'Col', unit: 'unidades' },
-  { name: 'Calabaza', unit: 'kg' },
-  { name: 'Melones', unit: 'unidades' },
-  { name: 'Sandías', unit: 'unidades' },
-  { name: 'Fresas', unit: 'kg' },
-  { name: 'Limones', unit: 'kg' },
-  { name: 'Naranjas', unit: 'kg' }
+  { emoji: '🥚', name: 'Huevos', unit: 'docenas' },
+  { emoji: '🥔', name: 'Patatas', unit: 'kg' },
+  { emoji: '🍅', name: 'Tomates', unit: 'kg' },
+  { emoji: '🥒', name: 'Pepinos', unit: 'kg' },
+  { emoji: '🫑', name: 'Pimientos', unit: 'kg' },
+  { emoji: '🫑', name: 'Pimientos italianos', unit: 'kg' },
+  { emoji: '🌶️', name: 'Pimientos rojos', unit: 'kg' },
+  { emoji: '🍆', name: 'Berenjenas', unit: 'kg' },
+  { emoji: '🥒', name: 'Calabacines', unit: 'kg' },
+  { emoji: '🧅', name: 'Cebollas', unit: 'kg' },
+  { emoji: '🧄', name: 'Ajos', unit: 'cabezas' },
+  { emoji: '🥬', name: 'Lechugas', unit: 'unidades' },
+  { emoji: '🫘', name: 'Habicholillas / Judía verde', unit: 'kg' },
+  { emoji: '🫘', name: 'Habas', unit: 'kg' },
+  { emoji: '🟢', name: 'Guisantes', unit: 'kg' },
+  { emoji: '🥬', name: 'Acelgas', unit: 'manojos' },
+  { emoji: '🥬', name: 'Espinacas', unit: 'manojos' },
+  { emoji: '🥕', name: 'Zanahorias', unit: 'manojos' },
+  { emoji: '🔴', name: 'Rábanos', unit: 'manojos' },
+  { emoji: '🥦', name: 'Coliflor', unit: 'unidades' },
+  { emoji: '🥦', name: 'Brócoli', unit: 'unidades' },
+  { emoji: '🥬', name: 'Col', unit: 'unidades' },
+  { emoji: '🎃', name: 'Calabaza', unit: 'kg' },
+  { emoji: '🍈', name: 'Melones', unit: 'unidades' },
+  { emoji: '🍉', name: 'Sandías', unit: 'unidades' },
+  { emoji: '🍓', name: 'Fresas', unit: 'kg' },
+  { emoji: '🍋', name: 'Limones', unit: 'kg' },
+  { emoji: '🍊', name: 'Naranjas', unit: 'kg' }
+];
+
+const emojiByName = [
+  { keys: ['huevo'], emoji: '🥚' },
+  { keys: ['patata', 'papa'], emoji: '🥔' },
+  { keys: ['tomate'], emoji: '🍅' },
+  { keys: ['pepino'], emoji: '🥒' },
+  { keys: ['pimiento', 'italiano'], emoji: '🫑' },
+  { keys: ['guindilla', 'chile'], emoji: '🌶️' },
+  { keys: ['berenjena'], emoji: '🍆' },
+  { keys: ['calabacin', 'calabacín'], emoji: '🥒' },
+  { keys: ['cebolla'], emoji: '🧅' },
+  { keys: ['ajo'], emoji: '🧄' },
+  { keys: ['lechuga', 'acelga', 'espinaca', 'col'], emoji: '🥬' },
+  { keys: ['habicholilla', 'judia', 'judía', 'haba'], emoji: '🫘' },
+  { keys: ['guisante'], emoji: '🟢' },
+  { keys: ['zanahoria'], emoji: '🥕' },
+  { keys: ['rabano', 'rábano'], emoji: '🔴' },
+  { keys: ['brocoli', 'brócoli', 'coliflor'], emoji: '🥦' },
+  { keys: ['calabaza'], emoji: '🎃' },
+  { keys: ['melon', 'melón'], emoji: '🍈' },
+  { keys: ['sandia', 'sandía'], emoji: '🍉' },
+  { keys: ['fresa'], emoji: '🍓' },
+  { keys: ['limon', 'limón'], emoji: '🍋' },
+  { keys: ['naranja'], emoji: '🍊' }
 ];
 
 let app = null;
@@ -67,6 +92,7 @@ let catalog = [];
 let orders = [];
 let unsubscribeOrders = null;
 let unsubscribeCatalog = null;
+let deferredInstallPrompt = null;
 
 const loginView = document.getElementById('login-view');
 const pedidosView = document.getElementById('v-pedidos');
@@ -88,8 +114,12 @@ const deliveredContainer = document.getElementById('delivered-container');
 const syncStatus = document.getElementById('sync-status');
 
 const catContainer = document.getElementById('cat-container');
+const newEmojiInput = document.getElementById('new-emoji');
 const newProdInput = document.getElementById('new-prod');
 const newUnitSelect = document.getElementById('new-unit');
+
+const installBtn = document.getElementById('install-btn');
+const installBtnLogin = document.getElementById('install-btn-login');
 
 document.getElementById('add-row-btn').addEventListener('click', addRow);
 document.getElementById('save-order-btn').addEventListener('click', saveOrder);
@@ -97,6 +127,9 @@ document.getElementById('add-catalog-btn').addEventListener('click', addCatalogI
 document.getElementById('refresh-btn').addEventListener('click', renderBoard);
 loginBtn.addEventListener('click', login);
 logoutBtn.addEventListener('click', logout);
+
+installBtn.addEventListener('click', installApp);
+installBtnLogin.addEventListener('click', installApp);
 
 document.querySelectorAll('.nav-item').forEach(btn => {
   btn.addEventListener('click', () => show(btn.dataset.tab));
@@ -106,8 +139,27 @@ loginPassword.addEventListener('keydown', event => {
   if (event.key === 'Enter') login();
 });
 
+newProdInput.addEventListener('input', () => {
+  if (!newEmojiInput.value.trim()) {
+    newEmojiInput.placeholder = guessEmoji(newProdInput.value) || 'Ej: 🍅';
+  }
+});
+
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  installBtn.classList.remove('hidden');
+  installBtnLogin.classList.remove('hidden');
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  installBtn.classList.add('hidden');
+  installBtnLogin.classList.add('hidden');
+});
+
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js?v=20').catch(() => {});
+  navigator.serviceWorker.register('./sw.js?v=30').catch(() => {});
 }
 
 initFirebase();
@@ -149,6 +201,21 @@ function initFirebase() {
     loginError.textContent = 'Error iniciando Firebase: ' + friendlyFirebaseError(error);
     loginBtn.disabled = true;
   }
+}
+
+async function installApp() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    installBtn.classList.add('hidden');
+    installBtnLogin.classList.add('hidden');
+    return;
+  }
+
+  alert(
+    'Para instalarla en Android: abre esta web en Chrome, pulsa los tres puntos de arriba y elige "Instalar app" o "Añadir a pantalla de inicio".'
+  );
 }
 
 function setLoggedOut() {
@@ -236,32 +303,79 @@ function hideAllViews() {
 async function seedCatalogIfEmpty() {
   const snapshot = await getDocs(collection(db, 'catalog'));
 
-  if (!snapshot.empty) return;
+  if (snapshot.empty) {
+    const batch = writeBatch(db);
 
-  const batch = writeBatch(db);
-
-  defaultCatalog.forEach(product => {
-    const productRef = doc(collection(db, 'catalog'));
-    batch.set(productRef, {
-      ...product,
-      createdAt: serverTimestamp(),
-      createdBy: auth.currentUser?.email || ''
+    defaultCatalog.forEach((product, index) => {
+      const productRef = doc(collection(db, 'catalog'));
+      batch.set(productRef, {
+        ...product,
+        inStock: true,
+        order: index,
+        createdAt: serverTimestamp(),
+        createdBy: auth.currentUser?.email || ''
+      });
     });
+
+    await batch.commit();
+    return;
+  }
+
+  await migrateOldCatalog(snapshot);
+}
+
+async function migrateOldCatalog(snapshot) {
+  const batch = writeBatch(db);
+  let needsCommit = FalseFlag();
+
+  snapshot.docs.forEach((productDoc, index) => {
+    const data = productDoc.data();
+    const updates = {};
+
+    if (!data.emoji) updates.emoji = guessEmoji(data.name);
+    if (typeof data.inStock !== 'boolean') updates.inStock = true;
+    if (typeof data.order !== 'number') updates.order = index;
+
+    if (Object.keys(updates).length) {
+      batch.update(doc(db, 'catalog', productDoc.id), updates);
+      needsCommit.value = true;
+    }
   });
 
-  await batch.commit();
+  if (needsCommit.value) await batch.commit();
+}
+
+function FalseFlag() {
+  return { value: false };
 }
 
 function listenCatalog() {
   if (unsubscribeCatalog) unsubscribeCatalog();
 
-  unsubscribeCatalog = onSnapshot(collection(db, 'catalog'), snapshot => {
+  const q = query(collection(db, 'catalog'), orderBy('order', 'asc'));
+
+  unsubscribeCatalog = onSnapshot(q, snapshot => {
     catalog = snapshot.docs
-      .map(document => ({ id: document.id, ...document.data() }))
-      .sort((a, b) => a.name.localeCompare(b.name, 'es'));
+      .map((document, index) => {
+        const data = document.data();
+        return {
+          id: document.id,
+          emoji: data.emoji || guessEmoji(data.name),
+          name: data.name,
+          unit: data.unit,
+          inStock: typeof data.inStock === 'boolean' ? data.inStock : true,
+          order: typeof data.order === 'number' ? data.order : index,
+          ...data
+        };
+      })
+      .sort((a, b) => {
+        const orderA = typeof a.order === 'number' ? a.order : 999999;
+        const orderB = typeof b.order === 'number' ? b.order : 999999;
+        return orderA - orderB;
+      });
 
     renderCatalog();
-    rebuildEmptyProductSelects();
+    rebuildProductRowsAfterCatalogChange();
   }, error => {
     catContainer.innerHTML = `<p class="error">${friendlyFirebaseError(error)}</p>`;
   });
@@ -284,8 +398,10 @@ function listenOrders() {
 }
 
 function addRow() {
-  if (!catalog.length) {
-    alert('El catálogo aún se está cargando. Prueba otra vez en unos segundos.');
+  const availableProducts = getAvailableProducts();
+
+  if (!availableProducts.length) {
+    alert('No hay productos en stock. Activa alguno en el catálogo.');
     return;
   }
 
@@ -294,7 +410,7 @@ function addRow() {
   div.innerHTML = `
     <label>Producto</label>
     <select class="p-select">
-      ${catalog.map(item => `<option value="${escapeHtml(item.name)}" data-u="${escapeHtml(item.unit)}">${escapeHtml(item.name)} (${escapeHtml(item.unit)})</option>`).join('')}
+      ${availableProducts.map(item => `<option value="${escapeHtml(item.name)}" data-u="${escapeHtml(item.unit)}" data-emoji="${escapeHtml(item.emoji)}">${escapeHtml(item.emoji)} ${escapeHtml(item.name)} (${escapeHtml(item.unit)})</option>`).join('')}
     </select>
 
     <label>Cantidad</label>
@@ -304,8 +420,28 @@ function addRow() {
   itemsList.appendChild(div);
 }
 
-function rebuildEmptyProductSelects() {
-  if (!itemsList.children.length && catalog.length) addRow();
+function getAvailableProducts() {
+  return catalog.filter(product => product.inStock !== false);
+}
+
+function rebuildProductRowsAfterCatalogChange() {
+  const availableProducts = getAvailableProducts();
+
+  if (!itemsList.children.length && availableProducts.length) {
+    addRow();
+    return;
+  }
+
+  document.querySelectorAll('.p-select').forEach(select => {
+    const oldValue = select.value;
+
+    select.innerHTML = availableProducts
+      .map(item => `<option value="${escapeHtml(item.name)}" data-u="${escapeHtml(item.unit)}" data-emoji="${escapeHtml(item.emoji)}">${escapeHtml(item.emoji)} ${escapeHtml(item.name)} (${escapeHtml(item.unit)})</option>`)
+      .join('');
+
+    const stillExists = availableProducts.some(item => item.name === oldValue);
+    if (stillExists) select.value = oldValue;
+  });
 }
 
 async function saveOrder() {
@@ -317,9 +453,10 @@ async function saveOrder() {
       const qty = row.querySelector('.p-qty').value.trim();
 
       return {
+        emoji: select.options[select.selectedIndex]?.dataset.emoji || '',
         name: select.value,
         qty,
-        unit: select.options[select.selectedIndex].dataset.u
+        unit: select.options[select.selectedIndex]?.dataset.u || ''
       };
     })
     .filter(item => item.qty);
@@ -381,7 +518,7 @@ function renderOrderCard(order) {
       </div>
 
       <ul>
-        ${(order.items || []).map(item => `<li>${escapeHtml(item.qty)} ${escapeHtml(item.unit)} ${escapeHtml(item.name)}</li>`).join('')}
+        ${(order.items || []).map(item => `<li>${escapeHtml(item.qty)} ${escapeHtml(item.unit)} ${escapeHtml(item.emoji || '')} ${escapeHtml(item.name)}</li>`).join('')}
       </ul>
 
       <div class="order-actions">
@@ -429,7 +566,7 @@ window.shareWhatsApp = function shareWhatsApp(id) {
   if (!order) return;
 
   const items = (order.items || [])
-    .map(item => `${item.qty} ${item.unit} ${item.name}`)
+    .map(item => `${item.qty} ${item.unit} ${item.emoji || ''} ${item.name}`)
     .join(', ');
 
   const text = `Pedido de ${order.client}: ${items}`;
@@ -444,28 +581,56 @@ function renderCatalog() {
     return;
   }
 
-  catContainer.innerHTML = catalog.map(product => `
-    <div class="cat-row">
-      <span>${escapeHtml(product.name)} (${escapeHtml(product.unit)})</span>
-      <button class="btn-danger" onclick="window.deleteCatalogItem('${product.id}')">Borrar</button>
-    </div>
-  `).join('');
+  catContainer.innerHTML = catalog.map((product, index) => {
+    const inStock = product.inStock !== false;
+
+    return `
+      <div class="cat-row ${inStock ? '' : 'out-of-stock'}">
+        <div class="cat-info">
+          <div class="cat-name">
+            <span class="cat-emoji">${escapeHtml(product.emoji || guessEmoji(product.name))}</span>
+            <span>${escapeHtml(product.name)}</span>
+          </div>
+          <div class="cat-unit">${escapeHtml(product.unit)}</div>
+          <span class="stock-label ${inStock ? 'stock-yes' : 'stock-no'}">
+            ${inStock ? 'En stock' : 'Sin stock'}
+          </span>
+        </div>
+
+        <div class="cat-actions">
+          <button class="btn-arrow" onclick="window.moveProduct('${product.id}', -1)" ${index === 0 ? 'disabled' : ''}>⬆️</button>
+          <button class="btn-arrow" onclick="window.moveProduct('${product.id}', 1)" ${index === catalog.length - 1 ? 'disabled' : ''}>⬇️</button>
+          <button class="${inStock ? 'btn-stock-on' : 'btn-stock-off'}" onclick="window.toggleProductStock('${product.id}', ${inStock})">
+            ${inStock ? 'Stock' : 'No stock'}
+          </button>
+          <button class="btn-danger" onclick="window.deleteCatalogItem('${product.id}')">Borrar</button>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 async function addCatalogItem() {
   const name = newProdInput.value.trim();
   const unit = newUnitSelect.value;
+  const emoji = newEmojiInput.value.trim() || guessEmoji(name);
 
   if (!name) return;
 
   try {
+    const nextOrder = catalog.length ? Math.max(...catalog.map(item => item.order || 0)) + 1 : 0;
+
     await addDoc(collection(db, 'catalog'), {
+      emoji,
       name,
       unit,
+      inStock: true,
+      order: nextOrder,
       createdAt: serverTimestamp(),
       createdBy: auth.currentUser?.email || ''
     });
 
+    newEmojiInput.value = '';
     newProdInput.value = '';
   } catch (error) {
     alert(friendlyFirebaseError(error));
@@ -481,6 +646,65 @@ window.deleteCatalogItem = async function deleteCatalogItem(id) {
     alert(friendlyFirebaseError(error));
   }
 };
+
+window.toggleProductStock = async function toggleProductStock(id, currentInStock) {
+  try {
+    await updateDoc(doc(db, 'catalog', id), {
+      inStock: !currentInStock,
+      updatedAt: serverTimestamp()
+    });
+  } catch (error) {
+    alert(friendlyFirebaseError(error));
+  }
+};
+
+window.moveProduct = async function moveProduct(id, direction) {
+  const currentIndex = catalog.findIndex(product => product.id === id);
+  const targetIndex = currentIndex + direction;
+
+  if (currentIndex < 0 || targetIndex < 0 || targetIndex >= catalog.length) return;
+
+  const currentProduct = catalog[currentIndex];
+  const targetProduct = catalog[targetIndex];
+
+  const currentOrder = typeof currentProduct.order === 'number' ? currentProduct.order : currentIndex;
+  const targetOrder = typeof targetProduct.order === 'number' ? targetProduct.order : targetIndex;
+
+  try {
+    const batch = writeBatch(db);
+
+    batch.update(doc(db, 'catalog', currentProduct.id), {
+      order: targetOrder,
+      updatedAt: serverTimestamp()
+    });
+
+    batch.update(doc(db, 'catalog', targetProduct.id), {
+      order: currentOrder,
+      updatedAt: serverTimestamp()
+    });
+
+    await batch.commit();
+  } catch (error) {
+    alert(friendlyFirebaseError(error));
+  }
+};
+
+function guessEmoji(name) {
+  const cleanName = normalizeText(name || '');
+
+  const found = emojiByName.find(item =>
+    item.keys.some(key => cleanName.includes(normalizeText(key)))
+  );
+
+  return found ? found.emoji : '🥬';
+}
+
+function normalizeText(text) {
+  return String(text)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
 
 function formatDate(timestamp) {
   if (!timestamp || !timestamp.toDate) return '';

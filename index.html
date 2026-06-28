@@ -16,7 +16,11 @@
     <strong>📦 Huerto TPV Pro</strong>
     <small id="user-email"></small>
   </div>
-  <button id="logout-btn" class="btn-ghost hidden">Salir</button>
+
+  <div class="header-actions">
+    <button id="install-btn" class="btn-install hidden">Instalar</button>
+    <button id="logout-btn" class="btn-ghost hidden">Salir</button>
+  </div>
 </header>
 
 <main>
@@ -35,6 +39,8 @@
 
       <button class="btn-primary" id="login-btn">Entrar</button>
       <p id="login-error" class="error"></p>
+
+      <button id="install-btn-login" class="btn-install-secondary">📲 Instalar app en el móvil</button>
 
       <div class="note">
         Primero crea los usuarios en Firebase Authentication. Esta app no permite registrarse desde fuera.
@@ -74,11 +80,24 @@
   <section id="v-catalogo" class="view">
     <div class="card">
       <h2>Catálogo</h2>
-      <p class="muted">Este catálogo también se guarda en la base de datos compartida.</p>
+      <p class="muted">
+        Activa o desactiva el stock para decidir qué productos aparecen al crear un pedido.
+        También puedes ordenar el catálogo con las flechas.
+      </p>
+
+      <div class="catalog-legend">
+        <span>✅ En stock: aparece en nuevo pedido</span>
+        <span>⛔ Sin stock: queda oculto</span>
+      </div>
 
       <div id="cat-container"></div>
 
       <hr />
+
+      <h3>Añadir producto</h3>
+
+      <label for="new-emoji">Emoji</label>
+      <input type="text" id="new-emoji" maxlength="4" placeholder="Ej: 🍅" autocomplete="off" />
 
       <label for="new-prod">Nuevo producto</label>
       <input type="text" id="new-prod" placeholder="Ej: Tomate cherry" autocomplete="off" />
@@ -105,6 +124,6 @@
   <button class="nav-item" data-tab="catalogo">🛒 Catálogo</button>
 </nav>
 
-<script type="module" src="app.js"></script>
+<script type="module" src="app.js?v=30"></script>
 </body>
 </html>
