@@ -1,11 +1,9 @@
-// Copia aquí la configuración de tu proyecto Firebase.
-// Firebase Console > Project settings > General > Your apps > Web app > SDK setup and configuration.
-
-export const firebaseConfig = {
-  apiKey: "PEGA_AQUI_TU_API_KEY",
-  authDomain: "PEGA_AQUI.firebaseapp.com",
-  projectId: "PEGA_AQUI_TU_PROJECT_ID",
-  storageBucket: "PEGA_AQUI.appspot.com",
-  messagingSenderId: "PEGA_AQUI",
-  appId: "PEGA_AQUI"
+export firebaseConfig = {
+  apiKey: "AIzaSyBuBs3HUeTsTBsxSM5xm3FhO8dQrRilx1Y",
+  authDomain: "pedidos-huerto.firebaseapp.com",
+  projectId: "pedidos-huerto",
+  storageBucket: "pedidos-huerto.firebasestorage.app",
+  messagingSenderId: "430029922954",
+  appId: "1:430029922954:web:1b1964bd40d450a0984373",
+  measurementId: "G-TVYQ1RHV9L"
 };
